@@ -622,8 +622,6 @@ function(GENERATE_ARDUINO_EXAMPLE INPUT_NAME)
     foreach(LIB_DEP ${TARGET_LIBS})
         set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${LIB_DEP}\"")
     endforeach()
-    
-    message("Includes: " ${LIB_DEP_INCLUDES})
 
     setup_arduino_libraries(ALL_LIBS ${INPUT_BOARD} "${ALL_SRCS}" "" "${LIB_DEP_INCLUDES}" "")
 
@@ -984,7 +982,6 @@ function(setup_arduino_library VAR_NAME BOARD_ID LIB_PATH COMPILE_FLAGS LINK_FLA
     if(NOT TARGET ${TARGET_LIB_NAME})
         string(REGEX REPLACE ".*/" "" LIB_SHORT_NAME ${LIB_NAME})
         
-    message("Library: ${LIB_SHORT_NAME} - recurse: ${${LIB_SHORT_NAME}_RECURSE}")
 
         # Detect if recursion is needed
         if (NOT DEFINED ${LIB_SHORT_NAME}_RECURSE)
@@ -995,7 +992,6 @@ function(setup_arduino_library VAR_NAME BOARD_ID LIB_PATH COMPILE_FLAGS LINK_FLA
         if(LIB_SRCS)
 
             arduino_debug_msg("Generating Arduino ${LIB_NAME} library out of ${LIB_SRCS}")
-            message("Generating Arduino ${LIB_NAME} library out of ${LIB_SRCS}")
             add_library(${TARGET_LIB_NAME} STATIC ${LIB_SRCS})
 
             get_arduino_flags(ARDUINO_COMPILE_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
@@ -1438,10 +1434,8 @@ function(find_sources VAR_NAME LIB_PATH RECURSE)
         ${LIB_PATH}/*.hxx)
 
     if(RECURSE)
-        message("Recursing ${LIB_PATH}.")
         file(GLOB_RECURSE LIB_FILES ${FILE_SEARCH_LIST})
     else()
-        message("Not recursing ${LIB_PATH}.")
         file(GLOB LIB_FILES ${FILE_SEARCH_LIST})
     endif()
 
