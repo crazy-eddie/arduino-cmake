@@ -622,6 +622,8 @@ function(GENERATE_ARDUINO_EXAMPLE INPUT_NAME)
     foreach(LIB_DEP ${TARGET_LIBS})
         set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${LIB_DEP}\"")
     endforeach()
+    
+    message("Includes: " ${LIB_DEP_INCLUDES})
 
     setup_arduino_libraries(ALL_LIBS ${INPUT_BOARD} "${ALL_SRCS}" "" "${LIB_DEP_INCLUDES}" "")
 
@@ -916,17 +918,23 @@ function(find_arduino_libraries VAR_NAME SRCS ARDLIBS)
 
             foreach(SRC_LINE ${SRC_CONTENTS})
                 if("${SRC_LINE}" MATCHES "^[ \t]*#[ \t]*include[ \t]*[<\"]([^>\"]*)[>\"]")
+                    #message("CMAKE_MATCH_1: " ${CMAKE_MATCH_1})
                     get_filename_component(INCLUDE_NAME ${CMAKE_MATCH_1} NAME_WE)
                     get_property(LIBRARY_SEARCH_PATH
                                  DIRECTORY     # Property Scope
                                  PROPERTY LINK_DIRECTORIES)
                     foreach(LIB_SEARCH_PATH ${LIBRARY_SEARCH_PATH} ${ARDUINO_LIBRARIES_PATH} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/libraries ${ARDUINO_EXTRA_LIBRARIES_PATH})
+                        #message("Checking for: " ${LIB_SEARCH_PATH}/${INCLUDE_NAME}/src/${CMAKE_MATCH_1})
                         if(EXISTS ${LIB_SEARCH_PATH}/${INCLUDE_NAME}/${CMAKE_MATCH_1})
                             list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH}/${INCLUDE_NAME})
                             break()
                         endif()
                         if(EXISTS ${LIB_SEARCH_PATH}/${CMAKE_MATCH_1})
                             list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH})
+                            break()
+                        endif()
+                        if(EXISTS ${LIB_SEARCH_PATH}/${INCLUDE_NAME}/src/${CMAKE_MATCH_1})
+                            list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH}/${INCLUDE_NAME}/src)
                             break()
                         endif()
                     endforeach()
@@ -959,27 +967,35 @@ endfunction()
 #=============================================================================#
 
 # For known libraries can list recurse here
-set(Wire_RECURSE True)
-set(Ethernet_RECURSE True)
-set(SD_RECURSE True)
+set(Wire_RECURSE ON)
+set(Ethernet_RECURSE ON)
+set(SD_RECURSE ON)
 function(setup_arduino_library VAR_NAME BOARD_ID LIB_PATH COMPILE_FLAGS LINK_FLAGS)
     set(LIB_TARGETS)
     set(LIB_INCLUDES)
+    
 
     get_filename_component(LIB_NAME ${LIB_PATH} NAME)
+    if (LIB_NAME STREQUAL "src")
+        get_filename_component(LIB_SHORT_PATH ${LIB_PATH} DIRECTORY)
+        get_filename_component(LIB_NAME ${LIB_SHORT_PATH} NAME)
+    endif()
     set(TARGET_LIB_NAME ${BOARD_ID}_${LIB_NAME})
     if(NOT TARGET ${TARGET_LIB_NAME})
         string(REGEX REPLACE ".*/" "" LIB_SHORT_NAME ${LIB_NAME})
+        
+    message("Library: ${LIB_SHORT_NAME} - recurse: ${${LIB_SHORT_NAME}_RECURSE}")
 
         # Detect if recursion is needed
         if (NOT DEFINED ${LIB_SHORT_NAME}_RECURSE)
-            set(${LIB_SHORT_NAME}_RECURSE False)
+            set(${LIB_SHORT_NAME}_RECURSE OFF)
         endif()
 
         find_sources(LIB_SRCS ${LIB_PATH} ${${LIB_SHORT_NAME}_RECURSE})
         if(LIB_SRCS)
 
-            arduino_debug_msg("Generating Arduino ${LIB_NAME} library")
+            arduino_debug_msg("Generating Arduino ${LIB_NAME} library out of ${LIB_SRCS}")
+            message("Generating Arduino ${LIB_NAME} library out of ${LIB_SRCS}")
             add_library(${TARGET_LIB_NAME} STATIC ${LIB_SRCS})
 
             get_arduino_flags(ARDUINO_COMPILE_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
@@ -1422,8 +1438,10 @@ function(find_sources VAR_NAME LIB_PATH RECURSE)
         ${LIB_PATH}/*.hxx)
 
     if(RECURSE)
+        message("Recursing ${LIB_PATH}.")
         file(GLOB_RECURSE LIB_FILES ${FILE_SEARCH_LIST})
     else()
+        message("Not recursing ${LIB_PATH}.")
         file(GLOB LIB_FILES ${FILE_SEARCH_LIST})
     endif()
 
@@ -1867,7 +1885,7 @@ function(SETUP_ARDUINO_SIZE_SCRIPT OUTPUT_VAR)
 
     file(WRITE ${ARDUINO_SIZE_SCRIPT_PATH} "
         set(AVRSIZE_PROGRAM ${AVRSIZE_PROGRAM})
-        set(AVRSIZE_FLAGS -C --mcu=\${MCU})
+        set(AVRSIZE_FLAGS)
 
         execute_process(COMMAND \${AVRSIZE_PROGRAM} \${AVRSIZE_FLAGS} \${FIRMWARE_IMAGE} \${EEPROM_IMAGE}
                         OUTPUT_VARIABLE SIZE_OUTPUT)
