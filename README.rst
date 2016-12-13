@@ -14,6 +14,8 @@ The **Arduino CMake** build system integrates tightly with the *Arduino SDK*.
 
 So if you like to do things from the command line (using make), or to build your firmware where you're in control, or if you would like to use an IDE such as Eclipse, KDevelop, XCode, CodeBlocks or something similar,  then **Arduino CMake** is the system for you.
 
+Since the original has not been updated for two years, and pending pull requests to update to the latest *Arduino SDK* remain unmerged, I forked and will maintain for the forseeable future.
+
 Features
 --------
 
@@ -37,11 +39,11 @@ Feedback
 
 **Arduino CMake** is hosted on GitHub and is available at:
 
-https://github.com/queezythegreat/arduino-cmake
+https://github.com/crazy-eddie/arduino-cmake
 
 Did you find a bug or would like a specific feature, please report it at:
 
-https://github.com/queezythegreat/arduino-cmake/issues
+https://github.com/crazy-eddie/arduino-cmake/issues
 
 If you would like to hack on this project, don't hesitate to fork it on GitHub.
 I will be glad to integrate your changes if you send me a ``Pull Request``.
@@ -88,6 +90,7 @@ I would like to thank the following people for contributing to **Arduino CMake**
 * Brendan Shillingford (`bshillingford`_)
 * Mike Purvis (`mikepurvis`_) 
 * Steffen Hanikel (`hanikesn`_)
+* Crazy Eddie (`eddie`_)
 
 .. _Kernald: https://github.com/Kernald
 .. _jgoppert: https://github.com/jgoppert
@@ -109,6 +112,7 @@ I would like to thank the following people for contributing to **Arduino CMake**
 .. _bshillingford: https://github.com/bshillingford
 .. _mikepurvis: https://github.com/mikepurvis
 .. _hanikesn: https://github.com/hanikesn
+.. _eddie: https://github.com/crazy-eddie
 
 License
 -------
@@ -842,7 +846,7 @@ Using **Arduino CMake** in your own project is simple, you just need a single di
 
 Copying the **cmake** directory, although simple is not the best solution. If you are using GIT for source code versioning, the best solution is using a submodule. The submodule gives you the power of updating to the latest version of **Arduino CMake** without any effort. To add a submodule do::
 
-    git submodule add git://github.com/queezythegreat/arduino-cmake.git arduino-cmake
+    git submodule add git://github.com/crazy-eddie/arduino-cmake.git arduino-cmake
 
 Then just set the CMAKE_TOOLCHAIN_FILE variable::
 
