@@ -10,7 +10,7 @@ CMake is great cross-platform build system that works on practically any operati
 
 The **Arduino CMake** build system integrates tightly with the *Arduino SDK*.
 
-*Arduino SDK* version **0.19** or higher is required.
+*Arduino SDK* version **1.6** or higher is required.
 
 So if you like to do things from the command line (using make), or to build your firmware where you're in control, or if you would like to use an IDE such as Eclipse, KDevelop, XCode, CodeBlocks or something similar,  then **Arduino CMake** is the system for you.
 
