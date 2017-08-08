@@ -2104,11 +2104,11 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "-Os -g       -w ${ARDUINO_C_FLAGS}" CACHE STRI
 if (NOT DEFINED ARDUINO_CXX_FLAGS)
     set(ARDUINO_CXX_FLAGS "${ARDUINO_C_FLAGS} -fno-exceptions")
 endif (NOT DEFINED ARDUINO_CXX_FLAGS)
-set(CMAKE_CXX_FLAGS                "-g -Os       ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
+set(CMAKE_CXX_FLAGS                "-Os -DNDEBUG      ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
 set(CMAKE_CXX_FLAGS_DEBUG          "-g           ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
-set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
-set(CMAKE_CXX_FLAGS_RELEASE        "-Os -DNDEBUG ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Os -g       ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG  ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_RELEASE        "-Os -DNDEBUG   ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Os -g        ${ARDUINO_CXX_FLAGS}" CACHE STRING "")
 
 #=============================================================================#
 #                       Executable Linker Flags                               #
